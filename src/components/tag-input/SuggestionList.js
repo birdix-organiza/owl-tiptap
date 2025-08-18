@@ -1,30 +1,133 @@
-import { Component, xml } from '@odoo/owl';
+import { Component, xml, useState, useEffect, useRef } from '@odoo/owl';
 import { classNames } from '../../utils/classNames';
 
 export class SuggestionList extends Component {
+  static props = {
+    items: { type: Array },
+    onSelect: { type: Function },
+    slots: { type: Object, optional: true },
+    className: { type: String, optional: true },
+  };
+
   static template = xml`
-    <div class="${classNames('&suggestion-list')}">
+    <div class="${classNames('&suggestion-list')}" t-att-class="props.className" t-on-mousedown="(event) => event.preventDefault()" t-ref="list">
+      <t t-slot="listHeader"/>
+
       <t t-if="props.items.length">
         <t t-foreach="props.items" t-as="item" t-key="item.value">
           <div
-            class="{ 'is-selected': item === props.selectedItem }"
+            t-att-class="{ 'is-selected': item.value === state.selectedItem?.value }"
             t-on-click="() => this.props.onSelect(item)"
+            t-att-data-value="item.value"
           >
-            <t t-esc="item.label" />
+            <t t-slot="listItem" item="item">
+              <t t-esc="item.label" />
+            </t>
           </div>
         </t>
       </t>
+
       <t t-else="">
         <div class="is-empty">
-          No results
+          <t t-slot="listEmpty" item="item">
+            没有匹配项
+          </t>
         </div>
       </t>
+
+      <t t-slot="listFooter"/>
     </div>
   `;
 
-  static props = {
-    items: { type: Array },
-    selectedItem: { type: Object, optional: true },
-    onSelect: { type: Function },
+  state = useState({
+    selectedItem: null,
+  });
+
+  listRef = useRef('list');
+
+  setup() {
+    useEffect(
+      () => {
+        const selectedItem = this.props.items[0] ?? null;
+        if (this.state.selectedItem?.value !== selectedItem?.value) {
+          this.state.selectedItem = selectedItem;
+        }
+      },
+      () => [this.props.items],
+    );
+
+    useEffect(
+      () => {
+        window.addEventListener('keydown', this.onKeyDown, true);
+
+        return () => {
+          window.removeEventListener('keydown', this.onKeyDown, true);
+        };
+      },
+      () => [this.props.items],
+    );
+
+    useEffect(() => {
+      this.scrollIntoView();
+    });
+  }
+
+  onKeyDown = (event) => {
+    if (event.key === 'ArrowUp') {
+      this.upHandler();
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    } else if (event.key === 'ArrowDown') {
+      this.downHandler();
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    } else if (event.key === 'Enter') {
+      this.enterHandler(event);
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
   };
+
+  upHandler() {
+    const { items } = this.props;
+    const { selectedItem } = this.state;
+    const selectedIndex = items.indexOf(selectedItem);
+    const newIndex = (selectedIndex - 1 + items.length) % items.length;
+    this.state.selectedItem = items[newIndex];
+  }
+
+  downHandler() {
+    const { items } = this.props;
+    const { selectedItem } = this.state;
+    const selectedIndex = items.indexOf(selectedItem);
+    const newIndex = (selectedIndex + 1) % items.length;
+    this.state.selectedItem = items[newIndex];
+  }
+
+  enterHandler(event) {
+    if (this.state.selectedItem) {
+      this.props.onSelect(event, this.state.selectedItem);
+    }
+  }
+
+  scrollIntoView() {
+    if (!this.listRef.el || !this.state.selectedItem) {
+      return;
+    }
+    const selectedItemEl = this.listRef.el.querySelector(`[data-value="${this.state.selectedItem.value}"]`);
+
+    if (selectedItemEl) {
+      const listRect = this.listRef.el.getBoundingClientRect();
+      const itemRect = selectedItemEl.getBoundingClientRect();
+      const listStyle = window.getComputedStyle(this.listRef.el);
+      const paddingTop = parseFloat(listStyle.paddingTop);
+      const paddingBottom = parseFloat(listStyle.paddingBottom);
+
+      if (itemRect.bottom > listRect.bottom - paddingBottom) {
+        this.listRef.el.scrollTop += itemRect.bottom - (listRect.bottom - paddingBottom);
+      } else if (itemRect.top < listRect.top + paddingTop) {
+        this.listRef.el.scrollTop -= listRect.top + paddingTop - itemRect.top;
+      }
+    }
+  }
 }

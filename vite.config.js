@@ -1,5 +1,4 @@
 import path from 'path';
-import reactPlugin from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import legacy from '@vitejs/plugin-legacy';
 import eslintPlugin from 'vite-plugin-eslint2';
@@ -18,7 +17,7 @@ const svgRawPlugin = () => {
             return `export default ${JSON.stringify(content)};`;
           } catch (error) {
             console.warn(`Could not load SVG file: ${filePath}`);
-            return `export default "";`;
+            return 'export default "";';
           }
         }
       }
@@ -32,9 +31,8 @@ export default defineConfig({
   plugins: [
     svgRawPlugin(),
     eslintPlugin({
-      include: ['src/**/*.{js,jsx}', 'test/**/*.{js,jsx}'],
+      include: ['src/**/*.{js}', 'test/**/*.{js}'],
     }),
-    reactPlugin(),
     legacy({
       targets: ['defaults', 'not IE 11'],
     }),
@@ -54,6 +52,6 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
-    extensions: ['.mjs', '.js', '.jsx', '.json'],
+    extensions: ['.mjs', '.js', '.json'],
   },
 });

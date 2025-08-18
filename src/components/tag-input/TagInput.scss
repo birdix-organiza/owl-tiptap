@@ -1,56 +1,105 @@
 .ott-tag-input {
+  position: relative;
   background-color: white;
 
   .ProseMirror {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
+    padding: 8px;
+    border: 1px solid rgb(var(--ott-border-color));
     border-radius: 4px;
 
     &:focus {
       outline: none;
-      border-color: #80bdff;
-      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      border-color: rgba(var(--ott-primary-color), 0.5);
+      box-shadow: 0 0 0 2px rgba(var(--ott-primary-color), 0.25);
+    }
+
+    p {
+      margin: 0;
     }
 
     p.is-editor-empty:first-child::before {
       content: attr(data-placeholder);
       float: left;
-      color: #adb5bd;
+      color: rgb(var(--ott-placeholder-color));
       pointer-events: none;
       height: 0;
     }
   }
 
-  .tag {
-    display: inline-block;
-    background-color: #e9ecef;
-    border-radius: 0.2rem;
-    padding: 0.1rem 0.3rem;
-    margin: 0 0.1rem;
-    font-weight: bold;
-    color: #495057;
-    white-space: nowrap;
+  .tag-wrapper {
+    display: inline-flex;
+    padding: 0 2px;
+    align-items: center;
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      background-color: rgba(var(--ott-primary-color), 0.1);
+      border: 1px solid rgba(var(--ott-primary-color), 0.4);
+      border-radius: 4px;
+      padding: 1px 3px;
+      color: rgb(var(--ott-primary-color));
+      white-space: nowrap;
+      transition: all 0.2s;
+      font-size: 12px;
+      box-sizing: border-box;
+      line-height: 1;
+
+      &:hover {
+        background-color: rgba(var(--ott-primary-color), 0.15);
+      }
+
+      .close-button {
+        margin-left: 5px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: rgb(var(--ott-primary-color));
+        border-radius: 50%;
+        width: 14px;
+        height: 14px;
+        transition: all 0.2s;
+
+        &:hover {
+          background-color: rgb(var(--ott-primary-color));
+          color: white;
+        }
+      }
+    }
+  }
+
+  .ott-suggestion-list-wrapper {
+    position: absolute;
+    z-index: 10;
+    left: 0;
+    right: 0;
   }
 
   .ott-suggestion-list {
-    position: absolute;
     background: white;
-    border: 1px solid #ccc;
+    max-height: 200px;
+    border: 1px solid rgba(var(--ott-primary-color), 0.4);
     border-radius: 4px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 0.2rem;
+    overflow: auto;
+    padding: 3px;
 
     div {
-      padding: 0.2rem 0.5rem;
+      padding: 3px 8px;
       cursor: pointer;
 
       &.is-selected,
       &:hover {
-        background-color: #f0f0f0;
+        background-color: rgba(var(--ott-primary-color), 0.1);
+        color: rgb(var(--ott-primary-color));
       }
 
       &.is-empty {
-        color: #888;
+        color: rgb(var(--ott-text-color-secondary));
         cursor: default;
       }
     }

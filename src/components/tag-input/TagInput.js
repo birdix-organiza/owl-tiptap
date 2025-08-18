@@ -13,27 +13,35 @@ export class TagInput extends Component {
   static props = {
     ref: { type: Function, optional: true },
     placeholder: { type: String, optional: true },
+    slots: { type: Object, optional: true },
+    suggestionListClassName: { type: String, optional: true },
+    onSuggestionSelect: { type: Function, optional: true },
+    items: { type: Function, optional: true },
   };
 
   static template = xml`
 <div class="${classNames('&tag-input')}">
   <div t-ref="editor"/>
-  <div t-if="state.suggestion.visible" t-att-style="state.suggestion.style">
+  <div t-if="state.suggestion.visible" t-att-style="state.suggestion.style" class="ott-suggestion-list-wrapper">
     <SuggestionList
+      className="props.suggestionListClassName"
       items="state.suggestion.items"
-      selectedItem="state.suggestion.selectedItem"
-      onSelect.alike="(item) => this.onSuggestionSelect(item)"
+      onSelect.bind="onSuggestionSelect"
+      slots="{ item: props.slots?.item }"
     />
   </div>
 </div>
   `;
+
+  static defaultProps = {
+    items: () => [],
+  };
 
   editorRef = useRef('editor');
   state = useState({
     suggestion: {
       visible: false,
       items: [],
-      selectedItem: null,
       command: (props) => {},
       style: '',
     },
@@ -51,20 +59,11 @@ export class TagInput extends Component {
           extensions: [
             StarterKit,
             Placeholder.configure({
-              placeholder: this.props.placeholder || 'Enter text...',
+              placeholder: this.props.placeholder || '请输入文本，按#选择标签...',
             }),
             TagNode,
             SuggestionPlugin.configure({
-              items: ({ query }) => {
-                // Now we return complex objects
-                const items = [
-                  { label: 'Apple', value: 'apple', group: 'Fruit' },
-                  { label: 'Banana', value: 'banana', group: 'Fruit' },
-                  { label: 'Carrot', value: 'carrot', group: 'Vegetable' },
-                  { label: 'Donut', value: 'donut', group: 'Snack' },
-                ];
-                return items.filter((item) => item.label.toLowerCase().startsWith(query.toLowerCase())).slice(0, 5);
-              },
+              items: this.props.items,
               command: ({ editor, range, props }) => {
                 editor
                   .chain()
@@ -78,50 +77,11 @@ export class TagInput extends Component {
               render: () => {
                 return {
                   onStart: (props) => {
-                    const rect = props.clientRect();
-                    this.state.suggestion = {
-                      ...this.state.suggestion,
-                      visible: true,
-                      items: props.items,
-                      selectedItem: props.items[0],
-                      command: props.command,
-                      style: `top: ${rect.bottom}px; left: ${rect.left}px;`,
-                    };
+                    this.updateSuggestion(props, { visible: true });
                   },
 
                   onUpdate: (props) => {
-                    const rect = props.clientRect();
-                    this.state.suggestion = {
-                      ...this.state.suggestion,
-                      items: props.items,
-                      selectedItem: props.items[0],
-                      command: props.command,
-                      style: `top: ${rect.bottom}px; left: ${rect.left}px;`,
-                    };
-                  },
-
-                  onKeyDown: ({ event }) => {
-                    const { items, selectedItem } = this.state.suggestion;
-                    const selectedIndex = items.indexOf(selectedItem);
-
-                    if (event.key === 'ArrowUp') {
-                      const newIndex = (selectedIndex - 1 + items.length) % items.length;
-                      this.state.suggestion.selectedItem = items[newIndex];
-                      return true;
-                    }
-
-                    if (event.key === 'ArrowDown') {
-                      const newIndex = (selectedIndex + 1) % items.length;
-                      this.state.suggestion.selectedItem = items[newIndex];
-                      return true;
-                    }
-
-                    if (event.key === 'Enter') {
-                      this.onSuggestionSelect(this.state.suggestion.selectedItem);
-                      return true;
-                    }
-
-                    return false;
+                    this.updateSuggestion(props);
                   },
 
                   onExit: () => {
@@ -132,14 +92,57 @@ export class TagInput extends Component {
             }),
           ],
           content: '',
+          onBlur: () => {
+            this.state.suggestion.visible = false;
+          },
         });
       },
       () => [],
     );
   }
 
-  onSuggestionSelect(item) {
-    this.state.suggestion.command(item);
-    this.state.suggestion.visible = false;
+  onSuggestionSelect(event, item) {
+    this.props.onSuggestionSelect?.(event, item);
+    if (!event.cancelBubble) {
+      this.state.suggestion.command(item);
+      this.state.suggestion.visible = false;
+    }
+  }
+
+  updateSuggestion(props, options) {
+    const clientRect = props.clientRect();
+    const editorRect = this.editorRef.el.getBoundingClientRect();
+    const { innerHeight } = window;
+
+    let style = '';
+    if (clientRect.bottom + 200 > innerHeight) {
+      style = `bottom: ${editorRect.height}px`;
+    } else {
+      style = `top: ${editorRect.height}`;
+    }
+
+    this.state.suggestion = {
+      ...this.state.suggestion,
+      items: props.items,
+      command: props.command,
+      style,
+      ...options,
+    };
+  }
+
+  /**
+   * Serializes the current content of the editor.
+   * @returns {object} The content as a JSON object.
+   */
+  getContent() {
+    return this.editor.getJSON();
+  }
+
+  /**
+   * Deserializes content into the editor.
+   * @param {object} content - The content to set, as a JSON object.
+   */
+  setContent(content) {
+    this.editor.commands.setContent(content);
   }
 }

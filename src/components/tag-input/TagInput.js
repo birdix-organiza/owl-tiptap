@@ -27,7 +27,7 @@ export class TagInput extends Component {
       className="props.suggestionListClassName"
       items="state.suggestion.items"
       onSelect.bind="onSuggestionSelect"
-      slots="{ item: props.slots?.item }"
+      slots="props.slots"
     />
   </div>
 </div>

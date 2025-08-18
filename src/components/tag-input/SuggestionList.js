@@ -20,7 +20,7 @@ export class SuggestionList extends Component {
               'is-selected': item.value === state.selectedItem?.value,
               'is-disabled': item.disabled,
             }"
-            t-on-click="() => this.onSelect(item)"
+            t-on-click="(ev) => this.onSelect(ev, item)"
             t-att-data-value="item.value"
           >
             <t t-slot="listItem" item="item">
@@ -48,8 +48,8 @@ export class SuggestionList extends Component {
 
   listRef = useRef('list');
 
-  onSelect(item) {
-    !item.disabled && this.props.onSelect(item);
+  onSelect(ev, item) {
+    !item.disabled && this.props.onSelect?.(ev, item);
   }
 
   setup() {

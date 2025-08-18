@@ -9,8 +9,8 @@
 
     &:focus {
       outline: none;
-      border-color: rgba(var(--ott-primary-color), 0.5);
-      box-shadow: 0 0 0 2px rgba(var(--ott-primary-color), 0.25);
+      border-color: rgba(var(--ott-primary-color), 0.8);
+      box-shadow: 0 0 0 2px rgba(var(--ott-primary-color), 0.2);
     }
 
     p {

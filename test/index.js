@@ -20,7 +20,7 @@ class App extends Component {
       { label: '中文标题', value: 'apple', group: 'Fruit' },
       { label: '产品名称', value: 'banana', group: 'Fruit' },
       { label: 'Carrot', value: 'carrot', group: 'Vegetable' },
-      { label: 'Donut', value: 'donut', group: 'Snack' },
+      { label: 'Donut', value: 'donut', group: 'Snack', disabled: true },
       { label: 'Egg', value: 'egg', group: 'Snack' },
       { label: 'Fish', value: 'fish', group: 'Snack' },
       { label: 'Grape', value: 'grape', group: 'Fruit' },

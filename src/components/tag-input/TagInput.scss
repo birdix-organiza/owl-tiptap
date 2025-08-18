@@ -102,6 +102,17 @@
         color: rgb(var(--ott-text-color-secondary));
         cursor: default;
       }
+
+      &.is-disabled {
+        color: rgb(var(--ott-text-color-secondary));
+        cursor: not-allowed;
+
+        &.is-selected,
+        &:hover {
+          background-color: transparent;
+          color: rgb(var(--ott-text-color-secondary));
+        }
+      }
     }
   }
 }

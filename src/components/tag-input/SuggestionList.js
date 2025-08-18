@@ -16,8 +16,11 @@ export class SuggestionList extends Component {
       <t t-if="props.items.length">
         <t t-foreach="props.items" t-as="item" t-key="item.value">
           <div
-            t-att-class="{ 'is-selected': item.value === state.selectedItem?.value }"
-            t-on-click="() => this.props.onSelect(item)"
+            t-att-class="{
+              'is-selected': item.value === state.selectedItem?.value,
+              'is-disabled': item.disabled,
+            }"
+            t-on-click="() => this.onSelect(item)"
             t-att-data-value="item.value"
           >
             <t t-slot="listItem" item="item">
@@ -45,10 +48,14 @@ export class SuggestionList extends Component {
 
   listRef = useRef('list');
 
+  onSelect(item) {
+    !item.disabled && this.props.onSelect(item);
+  }
+
   setup() {
     useEffect(
       () => {
-        const selectedItem = this.props.items[0] ?? null;
+        const selectedItem = this.props.items.find((item) => !item.disabled) ?? null;
         if (this.state.selectedItem?.value !== selectedItem?.value) {
           this.state.selectedItem = selectedItem;
         }
@@ -91,17 +98,25 @@ export class SuggestionList extends Component {
   upHandler() {
     const { items } = this.props;
     const { selectedItem } = this.state;
-    const selectedIndex = items.indexOf(selectedItem);
-    const newIndex = (selectedIndex - 1 + items.length) % items.length;
-    this.state.selectedItem = items[newIndex];
+    const selectableItems = items.filter((item) => !item.disabled);
+    if (!selectableItems.length) {
+      return;
+    }
+    const selectedIndex = selectableItems.indexOf(selectedItem);
+    const newIndex = (selectedIndex - 1 + selectableItems.length) % selectableItems.length;
+    this.state.selectedItem = selectableItems[newIndex];
   }
 
   downHandler() {
     const { items } = this.props;
     const { selectedItem } = this.state;
-    const selectedIndex = items.indexOf(selectedItem);
-    const newIndex = (selectedIndex + 1) % items.length;
-    this.state.selectedItem = items[newIndex];
+    const selectableItems = items.filter((item) => !item.disabled);
+    if (!selectableItems.length) {
+      return;
+    }
+    const selectedIndex = selectableItems.indexOf(selectedItem);
+    const newIndex = (selectedIndex + 1) % selectableItems.length;
+    this.state.selectedItem = selectableItems[newIndex];
   }
 
   enterHandler(event) {

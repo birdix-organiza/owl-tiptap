@@ -55,7 +55,7 @@ function addHeaderPlugin() {
 
 const plugins = [
   addHeaderPlugin(),
-  replaceExportsPlugin('window.owltiptap = window.owltiptap || {}'),
+  replaceExportsPlugin('window.owlTiptap = window.owlTiptap || {}'),
   strip({
     include: '**/*.js',
   }),

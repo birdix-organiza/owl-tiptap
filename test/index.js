@@ -8,7 +8,7 @@ class App extends Component {
 
   static template = xml`
 <div style="width: 100%; height: 100%;padding: 20px;box-sizing: border-box;background: #f5f5f5;">
-  <TagInput ref="(i) => this.tagInputInstance = i" items="items"/>
+  <TagInput ref="(i) => this.tagInputInstance = i" items="items" onChange.bind="onChange"/>
 </div>
 `;
 
@@ -32,6 +32,10 @@ class App extends Component {
     ];
     return items.filter((item) => item.label.toLowerCase().startsWith(query.toLowerCase()));
   };
+
+  onChange(content) {
+    console.log(content);
+  }
 
   setup() {
     // @ts-ignore

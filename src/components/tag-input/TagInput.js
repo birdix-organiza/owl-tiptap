@@ -17,6 +17,7 @@ export class TagInput extends Component {
     suggestionListClassName: { type: String, optional: true },
     onSuggestionSelect: { type: Function, optional: true },
     items: { type: Function, optional: true },
+    onChange: { type: Function, optional: true },
   };
 
   static template = xml`
@@ -94,6 +95,9 @@ export class TagInput extends Component {
           content: '',
           onBlur: () => {
             this.state.suggestion.visible = false;
+          },
+          onUpdate: ({ editor }) => {
+            this.props.onChange?.(editor.getJSON());
           },
         });
       },

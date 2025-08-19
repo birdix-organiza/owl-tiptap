@@ -230,8 +230,10 @@ export class TagInput extends Component {
             onBlur: () => {
               this.state.suggestion.visible = false;
             },
-            onUpdate: ({ editor }) => {
-              this.props.onChange?.(editor.getJSON());
+            onUpdate: ({ editor, transaction }) => {
+              if (transaction.docChanged) {
+                this.props.onChange?.(editor.getJSON());
+              }
             },
           }),
         );

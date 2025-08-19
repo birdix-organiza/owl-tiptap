@@ -202,7 +202,7 @@ export class TagInput extends Component {
                     const tags = this.getTags();
                     const index = tags.findIndex((tag) => tag.pos === pos);
                     if (index !== -1) {
-                      this.props.onTagClick(attrs, index);
+                      this.props.onTagClick(index, attrs);
                     }
                   }
                 },

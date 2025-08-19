@@ -17,6 +17,12 @@ export const TagNode = Node.create({
 
   atom: true,
 
+  addOptions() {
+    return {
+      onTagClick: () => {},
+    };
+  },
+
   addAttributes() {
     return {
       value: {
@@ -74,6 +80,9 @@ export const TagNode = Node.create({
 
       dom.setAttribute('data-type', 'tag');
       dom.classList.add('tag'); // Add a class for styling
+      dom.addEventListener('click', () => {
+        this.options.onTagClick(node.attrs, getPos());
+      });
 
       const labelSpan = document.createElement('span');
       labelSpan.textContent = label; // Set the visible text
@@ -82,7 +91,8 @@ export const TagNode = Node.create({
       const closeButton = document.createElement('button');
       closeButton.classList.add('close-button');
       closeButton.innerHTML = closeSVG;
-      closeButton.addEventListener('click', () => {
+      closeButton.addEventListener('click', (e) => {
+        e.stopPropagation();
         const pos = getPos();
         editor.view.dispatch(editor.view.state.tr.delete(pos, pos + node.nodeSize));
         editor.view.focus();

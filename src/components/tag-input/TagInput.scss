@@ -34,23 +34,22 @@
     .tag {
       display: inline-flex;
       align-items: center;
-      background-color: rgba(var(--ott-primary-color), 0.1);
-      border: 1px solid rgba(var(--ott-primary-color), 0.4);
-      border-radius: 4px;
-      padding: 1px 3px;
-      color: rgb(var(--ott-primary-color));
+      background-color: rgb(var(--ott-primary-color));
+      border: none;
+      border-radius: 3px;
+      padding: 2px 8px;
+      color: white;
       white-space: nowrap;
       transition: all 0.2s;
       font-size: 12px;
       box-sizing: border-box;
       line-height: 1;
-
       &:hover {
-        background-color: rgba(var(--ott-primary-color), 0.15);
+        cursor: pointer;
       }
 
       .close-button {
-        margin-left: 5px;
+        margin-left: 2px;
         border: none;
         background: none;
         cursor: pointer;
@@ -58,14 +57,14 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: rgb(var(--ott-primary-color));
+        color: white;
         border-radius: 50%;
         width: 14px;
         height: 14px;
         transition: all 0.2s;
 
         &:hover {
-          background-color: rgb(var(--ott-primary-color));
+          background-color: rgba(0, 0, 0, 0.2);
           color: white;
         }
       }

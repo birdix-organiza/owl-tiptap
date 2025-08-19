@@ -39,12 +39,22 @@ class App extends Component {
 
   setup() {
     // @ts-ignore
-    window.getJson = () => {
+    window.getContent = () => {
       return this.tagInputInstance.getContent();
     };
 
     // @ts-ignore
-    window.loadJson = () => {
+    window.removeTag = (index) => {
+      this.tagInputInstance.removeTag(index);
+    };
+
+    // @ts-ignore
+    window.replaceTag = (index, props) => {
+      this.tagInputInstance.replaceTag(index, props);
+    };
+
+    // @ts-ignore
+    window.setContent = () => {
       this.tagInputInstance.setContent({
         type: 'doc',
         content: [

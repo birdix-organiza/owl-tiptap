@@ -25,7 +25,7 @@ export class TagInput extends Component {
   static template = xml`
 <div class="${classNames('&tag-input')}">
   <div t-ref="editor"/>
-  <div t-if="state.suggestion.visible" t-att-disabled="props.readonly" t-att-style="state.suggestion.style" class="ott-suggestion-list-wrapper">
+  <div t-if="state.suggestion.visible" t-att-style="state.suggestion.style" class="ott-suggestion-list-wrapper">
     <SuggestionList
       className="props.suggestionListClassName"
       items="state.suggestion.items"

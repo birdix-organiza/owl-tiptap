@@ -12,7 +12,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/birdix-organiza/owl-tiptap"
   },
   "files": [
     "es"
@@ -21,7 +21,7 @@
     "owl"
   ],
   "author": "birdix",
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "dependencies": {
     "@tiptap/core": "^3.2.0",
     "@tiptap/extension-document": "^3.13.0",

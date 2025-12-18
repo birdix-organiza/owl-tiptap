@@ -1,7 +1,33 @@
 import { Component, xml, useState, useEffect, useRef } from '@odoo/owl';
 import { classNames } from '../../utils/classNames';
 
-export class SuggestionList extends Component {
+// 定义建议项的类型
+export interface SuggestionItem {
+  value: string;
+  label?: string;
+  disabled?: boolean;
+  [key: string]: any; // 允许其他属性
+}
+
+// 定义组件 Props 的类型
+interface SuggestionListProps {
+  items: SuggestionItem[];
+  onSelect: (event: MouseEvent, item: SuggestionItem) => void;
+  slots?: {
+    listHeader?: any;
+    listItem?: any;
+    listEmpty?: any;
+    listFooter?: any;
+  };
+  className?: string;
+}
+
+// 定义组件状态的类型
+interface SuggestionListState {
+  selectedItem: SuggestionItem | null;
+}
+
+export class SuggestionList extends Component<SuggestionListProps> {
   static props = {
     items: { type: Array },
     onSelect: { type: Function },
@@ -42,13 +68,13 @@ export class SuggestionList extends Component {
     </div>
   `;
 
-  state = useState({
+  state = useState<SuggestionListState>({
     selectedItem: null,
   });
 
   listRef = useRef('list');
 
-  onSelect(ev, item) {
+  onSelect(ev: MouseEvent, item: SuggestionItem) {
     !item.disabled && this.props.onSelect?.(ev, item);
   }
 
@@ -79,7 +105,7 @@ export class SuggestionList extends Component {
     });
   }
 
-  onKeyDown = (event) => {
+  onKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'ArrowUp') {
       this.upHandler();
       event.preventDefault();
@@ -102,7 +128,7 @@ export class SuggestionList extends Component {
     if (!selectableItems.length) {
       return;
     }
-    const selectedIndex = selectableItems.indexOf(selectedItem);
+    const selectedIndex = selectableItems.indexOf(selectedItem!);
     const newIndex = (selectedIndex - 1 + selectableItems.length) % selectableItems.length;
     this.state.selectedItem = selectableItems[newIndex];
   }
@@ -114,14 +140,14 @@ export class SuggestionList extends Component {
     if (!selectableItems.length) {
       return;
     }
-    const selectedIndex = selectableItems.indexOf(selectedItem);
+    const selectedIndex = selectableItems.indexOf(selectedItem!);
     const newIndex = (selectedIndex + 1) % selectableItems.length;
     this.state.selectedItem = selectableItems[newIndex];
   }
 
-  enterHandler(event) {
+  enterHandler(event: KeyboardEvent) {
     if (this.state.selectedItem) {
-      this.props.onSelect(event, this.state.selectedItem);
+      this.props.onSelect(event as any, this.state.selectedItem);
     }
   }
 
@@ -133,7 +159,7 @@ export class SuggestionList extends Component {
 
     if (selectedItemEl) {
       const listRect = this.listRef.el.getBoundingClientRect();
-      const itemRect = selectedItemEl.getBoundingClientRect();
+      const itemRect = (selectedItemEl as Element).getBoundingClientRect();
       const listStyle = window.getComputedStyle(this.listRef.el);
       const paddingTop = parseFloat(listStyle.paddingTop);
       const paddingBottom = parseFloat(listStyle.paddingBottom);

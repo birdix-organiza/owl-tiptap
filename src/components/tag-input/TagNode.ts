@@ -1,4 +1,5 @@
 import { Node, mergeAttributes } from '@tiptap/core';
+import { TagAttributes } from './TagInput';
 
 const closeSVG = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
@@ -6,7 +7,13 @@ const closeSVG = `
         </svg>
       `;
 
-export const TagNode = Node.create({
+// 定义 TagNode 选项的类型
+interface TagNodeOptions {
+  onTagClick: (attrs: TagAttributes, pos: number) => void;
+  renderLabel?: (attrs: TagAttributes) => string;
+}
+
+export const TagNode = Node.create<TagNodeOptions>({
   name: 'tag',
 
   group: 'inline',
@@ -17,7 +24,7 @@ export const TagNode = Node.create({
 
   atom: true,
 
-  addOptions() {
+  addOptions(): TagNodeOptions {
     return {
       onTagClick: () => {},
     };
@@ -27,18 +34,18 @@ export const TagNode = Node.create({
     return {
       value: {
         default: null,
-        parseHTML: (element) => element.getAttribute('data-value'),
-        renderHTML: (attributes) => ({ 'data-value': attributes.value }),
+        parseHTML: (element: HTMLElement) => element.getAttribute('data-value'),
+        renderHTML: (attributes: TagAttributes) => ({ 'data-value': attributes.value }),
       },
       label: {
         default: null,
-        parseHTML: (element) => element.getAttribute('data-label'),
-        renderHTML: (attributes) => ({ 'data-label': attributes.label }),
+        parseHTML: (element: HTMLElement) => element.getAttribute('data-label'),
+        renderHTML: (attributes: TagAttributes) => ({ 'data-label': attributes.label }),
       },
       group: {
         default: null,
-        parseHTML: (element) => element.getAttribute('data-group'),
-        renderHTML: (attributes) => ({ 'data-group': attributes.group }),
+        parseHTML: (element: HTMLElement) => element.getAttribute('data-group'),
+        renderHTML: (attributes: TagAttributes) => ({ 'data-group': attributes.group }),
       },
     };
   },
@@ -51,7 +58,9 @@ export const TagNode = Node.create({
     return [
       'span',
       mergeAttributes({ 'data-type': 'tag' }, HTMLAttributes),
-      this.options.renderLabel ? this.options.renderLabel(HTMLAttributes) : HTMLAttributes.label,
+      this.options.renderLabel
+        ? this.options.renderLabel(HTMLAttributes as TagAttributes)
+        : (HTMLAttributes as TagAttributes).label,
     ];
   },
 
@@ -69,7 +78,7 @@ export const TagNode = Node.create({
       const dom = document.createElement('span');
 
       // Get attributes directly from the node being rendered
-      const { label, ...attrs } = node.attrs;
+      const { label, ...attrs } = node.attrs as TagAttributes;
 
       // Set data attributes
       Object.entries(attrs).forEach(([key, value]) => {
@@ -81,7 +90,7 @@ export const TagNode = Node.create({
       dom.setAttribute('data-type', 'tag');
       dom.classList.add('tag'); // Add a class for styling
       dom.addEventListener('click', () => {
-        this.options.onTagClick(node.attrs, getPos());
+        this.options.onTagClick(node.attrs as TagAttributes, getPos());
       });
 
       const labelSpan = document.createElement('span');

@@ -31,7 +31,7 @@ export default defineConfig({
   plugins: [
     svgRawPlugin(),
     eslintPlugin({
-      include: ['src/**/*.{js}', 'test/**/*.{js}'],
+      include: ['src/**/*.{js,ts}', 'test/**/*.{js,ts}'],
     }),
     legacy({
       targets: ['defaults', 'not IE 11'],
@@ -49,9 +49,6 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
-    extensions: ['.mjs', '.js', '.json'],
+    extensions: ['.mjs', '.js', '.json', '.ts'],
   },
 });

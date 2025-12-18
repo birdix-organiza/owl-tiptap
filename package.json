@@ -6,9 +6,8 @@
   "scripts": {
     "start": "vite",
     "clean": "gulp clean",
-    "build": "rimraf dist && rollup -c",
-    "build-terse": "cross-env TERSE=true npm run build",
-    "eslint": "eslint ./src/. ./test/.  --ext .js,.jsx --fix"
+    "build": "gulp build",
+    "eslint": "eslint ./src/. ./test/.  --ext .js,.ts --fix"
   },
   "type": "module",
   "repository": {
@@ -25,41 +24,43 @@
   "license": "LGPL-3.0",
   "dependencies": {
     "@tiptap/core": "^3.2.0",
+    "@tiptap/extension-document": "^3.13.0",
+    "@tiptap/extension-history": "^3.13.0",
     "@tiptap/extension-mention": "^3.2.0",
+    "@tiptap/extension-paragraph": "^3.13.0",
     "@tiptap/extension-placeholder": "^3.2.0",
-    "@tiptap/starter-kit": "^3.2.0",
-    "@tiptap/suggestion": "^3.2.0",
+    "@tiptap/extension-text": "^3.13.0",
+    "@tiptap/suggestion": "^3.13.0",
     "classnames": "^2.3.2"
   },
   "peerDependencies": {
-    "@odoo/owl": "~2.4.0"
+    "@odoo/owl": "~2.4.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
-    "@odoo/owl": "~2.4.0",
-    "@rollup/plugin-alias": "^5.1.0",
-    "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-replace": "^5.0.5",
-    "@rollup/plugin-strip": "^3.0.4",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-url": "^8.0.2",
+    "@gulp-plugin/alias": "^2.2.2",
+    "@odoo/owl": "^2.4.1",
     "@stylistic/eslint-plugin": "^4.2.0",
+    "@stylistic/eslint-plugin-ts": "^4.2.0",
+    "@typescript-eslint/parser": "^8.29.1",
     "@vitejs/plugin-legacy": "^6.0.2",
-    "cross-env": "^7.0.3",
-    "cssnano": "^7.0.6",
+    "@vitejs/plugin-react": "^4.3.4",
+    "copyfiles": "^2.4.1",
     "eslint": "^9.22.0",
+    "glob": "^11.0.1",
     "globals": "^16.0.0",
+    "gulp": "^5.0.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-replace": "^1.1.4",
+    "gulp-sass": "^6.0.1",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "merge2": "^1.4.1",
     "prettier": "^3.5.3",
     "rimraf": "^6.0.1",
-    "rollup": "^4.6.1",
-    "rollup-plugin-polyfill-node": "^0.13.0",
-    "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-svgo": "^2.0.0",
     "sass": "^1.86.3",
     "sass-embedded": "^1.86.0",
     "tsccss": "^1.0.0",
+    "typescript": "^5.8.2",
     "vite": "^6.2.2",
     "vite-plugin-eslint2": "^5.0.3"
   }

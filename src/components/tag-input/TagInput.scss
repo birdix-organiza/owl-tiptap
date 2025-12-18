@@ -32,6 +32,7 @@
     align-items: center;
 
     .tag {
+      min-height: 20px;
       display: inline-flex;
       align-items: center;
       background-color: rgb(var(--ott-primary-color));

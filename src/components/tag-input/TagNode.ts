@@ -11,6 +11,7 @@ const closeSVG = `
 interface TagNodeOptions {
   onTagClick: (attrs: TagAttributes, pos: number) => void;
   renderLabel?: (attrs: TagAttributes) => string;
+  readonly?: boolean;
 }
 
 export const TagNode = Node.create<TagNodeOptions>({
@@ -27,6 +28,7 @@ export const TagNode = Node.create<TagNodeOptions>({
   addOptions(): TagNodeOptions {
     return {
       onTagClick: () => {},
+      readonly: false, // 默认不只读
     };
   },
 
@@ -34,44 +36,23 @@ export const TagNode = Node.create<TagNodeOptions>({
     return {
       value: {
         default: null,
-        parseHTML: (element: HTMLElement) => element.getAttribute('data-value'),
-        renderHTML: (attributes: TagAttributes) => ({ 'data-value': attributes.value }),
       },
       label: {
         default: null,
-        parseHTML: (element: HTMLElement) => element.getAttribute('data-label'),
-        renderHTML: (attributes: TagAttributes) => ({ 'data-label': attributes.label }),
       },
       group: {
         default: null,
-        parseHTML: (element: HTMLElement) => element.getAttribute('data-group'),
-        renderHTML: (attributes: TagAttributes) => ({ 'data-group': attributes.group }),
       },
     };
-  },
-
-  parseHTML() {
-    return [{ tag: 'span[data-type="tag"]' }];
-  },
-
-  renderHTML({ HTMLAttributes }) {
-    return [
-      'span',
-      mergeAttributes({ 'data-type': 'tag' }, HTMLAttributes),
-      this.options.renderLabel
-        ? this.options.renderLabel(HTMLAttributes as TagAttributes)
-        : (HTMLAttributes as TagAttributes).label,
-    ];
-  },
-
-  renderText({ node }) {
-    return node.attrs.label;
   },
 
   addNodeView() {
     // We can implement an Owl NodeView here later if complex rendering is needed.
     // For now, renderHTML is sufficient.
     return ({ node, getPos, editor }) => {
+      const { readonly } = this.options; // 从 options 中获取当前状态
+      console.log(readonly);
+
       const wrapper = document.createElement('span');
       wrapper.classList.add('tag-wrapper');
 
@@ -97,21 +78,27 @@ export const TagNode = Node.create<TagNodeOptions>({
       labelSpan.textContent = label; // Set the visible text
       dom.appendChild(labelSpan);
 
-      const closeButton = document.createElement('button');
-      closeButton.classList.add('close-button');
-      closeButton.innerHTML = closeSVG;
-      closeButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const pos = getPos();
-        editor.view.dispatch(editor.view.state.tr.delete(pos, pos + node.nodeSize));
-        editor.view.focus();
-      });
-      dom.appendChild(closeButton);
+      if (!readonly) {
+        const closeButton = document.createElement('button');
+        closeButton.classList.add('close-button');
+        closeButton.innerHTML = closeSVG;
+        closeButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const pos = getPos();
+          editor.view.dispatch(editor.view.state.tr.delete(pos, pos + node.nodeSize));
+          editor.view.focus();
+        });
+        dom.appendChild(closeButton);
+      }
 
       wrapper.appendChild(dom);
 
       return {
         dom: wrapper,
+        update: (updatedNode) => {
+          debugger;
+          return true;
+        },
       };
     };
   },

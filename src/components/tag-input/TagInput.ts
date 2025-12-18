@@ -64,6 +64,7 @@ interface TagInputProps {
 export class TagInput extends Component<TagInputProps> {
   static components = { SuggestionList };
   static props = {
+    className: { type: String, optional: true },
     ref: { type: Function, optional: true },
     placeholder: { type: String, optional: true },
     slots: { type: Object, optional: true },
@@ -77,7 +78,7 @@ export class TagInput extends Component<TagInputProps> {
   };
 
   static template = xml`
-<div class="${classNames('&tag-input')}">
+<div class="${classNames('&tag-input')}" t-att-class="props.className">
   <div t-ref="editor"/>
   <div t-if="state.suggestion.visible" t-att-style="state.suggestion.style" class="ott-suggestion-list-wrapper">
     <SuggestionList
@@ -227,6 +228,72 @@ export class TagInput extends Component<TagInputProps> {
     return tags;
   }
 
+  renderEditor() {
+    this.destroyEditor();
+    this.state.editor = markRaw(
+      new Editor({
+        element: this.editorRef.el,
+        editable: !this.props.readonly,
+        extensions: [
+          Document,
+          Text,
+          Paragraph,
+          History,
+          Placeholder.configure({
+            placeholder: this.props.placeholder || `请输入文本，按${this.props.char}选择标签...`,
+          }),
+          TagNode.configure({
+            readonly: this.props.readonly,
+            onTagClick: (attrs: TagAttributes, pos: number) => {
+              if (this.props.onTagClick) {
+                const tags = this.getTags();
+                const index = tags.findIndex((tag) => tag.pos === pos);
+                if (index !== -1) {
+                  this.props.onTagClick(index, attrs);
+                }
+              }
+            },
+          }),
+          SuggestionPlugin.configure({
+            char: this.props.char,
+            items: this.props.items,
+            render: () => {
+              return {
+                onStart: (props: any) => {
+                  if (props.text !== this.props.char) {
+                    return;
+                  }
+
+                  this.updateSuggestion(props, { visible: true });
+                },
+                onUpdate: (props: any) => {
+                  this.updateSuggestion(props);
+                },
+                onExit: (props: any) => {
+                  this.state.suggestion.visible = false;
+                },
+              };
+            },
+          }),
+        ],
+        content: null,
+        onBlur: ({ editor }) => {
+          this.state.suggestion.visible = false;
+          exitSuggestionPlugin(editor.view);
+        },
+        onUpdate: ({ editor, transaction }) => {
+          if (transaction.docChanged) {
+            this.props.onChange?.(editor.getJSON());
+          }
+        },
+      }),
+    );
+  }
+
+  destroyEditor() {
+    this.state.editor?.destroy();
+  }
+
   setup() {
     onMounted(() => {
       this.props.ref?.(this);
@@ -235,72 +302,21 @@ export class TagInput extends Component<TagInputProps> {
     useEffect(
       () => {
         if (this.state.editor) {
-          this.state.editor.setEditable(!this.props.readonly);
+          const content = this.getContent();
+          this.destroyEditor();
+          this.renderEditor();
+          this.setContent(content);
         }
       },
-      () => [this.props.readonly, this.state.editor],
+      () => [this.props.readonly],
     );
 
     useEffect(
       () => {
-        this.state.editor = markRaw(
-          new Editor({
-            element: this.editorRef.el,
-            extensions: [
-              Document,
-              Text,
-              Paragraph,
-              History,
-              Placeholder.configure({
-                placeholder: this.props.placeholder || `请输入文本，按${this.props.char}选择标签...`,
-              }),
-              TagNode.configure({
-                onTagClick: (attrs: TagAttributes, pos: number) => {
-                  if (this.props.onTagClick) {
-                    const tags = this.getTags();
-                    const index = tags.findIndex((tag) => tag.pos === pos);
-                    if (index !== -1) {
-                      this.props.onTagClick(index, attrs);
-                    }
-                  }
-                },
-              }),
-              SuggestionPlugin.configure({
-                char: this.props.char,
-                items: this.props.items,
-                render: () => {
-                  return {
-                    onStart: (props: any) => {
-                      if (props.text !== this.props.char) {
-                        return;
-                      }
+        this.renderEditor();
 
-                      this.updateSuggestion(props, { visible: true });
-                    },
-                    onUpdate: (props: any) => {
-                      this.updateSuggestion(props);
-                    },
-                    onExit: (props: any) => {
-                      this.state.suggestion.visible = false;
-                    },
-                  };
-                },
-              }),
-            ],
-            content: null,
-            onBlur: ({ editor }) => {
-              this.state.suggestion.visible = false;
-              exitSuggestionPlugin(editor.view);
-            },
-            onUpdate: ({ editor, transaction }) => {
-              if (transaction.docChanged) {
-                this.props.onChange?.(editor.getJSON());
-              }
-            },
-          }),
-        );
         return () => {
-          this.state.editor?.destroy();
+          this.destroyEditor();
         };
       },
       () => [],

@@ -1,4 +1,4 @@
-import { Component, mount, xml } from '@odoo/owl';
+import { Component, mount, xml, useState, useEffect } from '@odoo/owl';
 import { TagInput } from '../src';
 
 class App extends Component {
@@ -8,11 +8,15 @@ class App extends Component {
 
   static template = xml`
 <div style="width: 100%; height: 100%;padding: 20px;box-sizing: border-box;background: #f5f5f5;">
-  <TagInput ref="(i) => this.tagInputInstance = i" items="items" onChange.bind="onChange"/>
+  <TagInput ref="(i) => this.tagInputInstance = i" items="items" onChange.bind="onChange" readonly="state.readonly"/>
 </div>
 `;
 
   tagInputInstance = undefined;
+
+  state = useState({
+    readonly: false,
+  });
 
   items = ({ editor, query }) => {
     // Now we return complex objects
@@ -38,6 +42,15 @@ class App extends Component {
   }
 
   setup() {
+    useEffect(
+      () => {
+        setTimeout(() => {
+          this.state.readonly = true;
+        }, 3000);
+      },
+      () => [],
+    );
+
     // @ts-ignore
     window.getContent = () => {
       return this.tagInputInstance.getContent();

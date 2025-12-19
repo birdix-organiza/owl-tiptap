@@ -15,7 +15,7 @@ class App extends Component {
   tagInputInstance = undefined;
 
   state = useState({
-    readonly: false,
+    readonly: true,
   });
 
   items = ({ editor, query }) => {
@@ -44,9 +44,8 @@ class App extends Component {
   setup() {
     useEffect(
       () => {
-        setTimeout(() => {
-          // this.state.readonly = true;
-        }, 3000);
+        // @ts-ignore
+        window.setContent();
       },
       () => [],
     );

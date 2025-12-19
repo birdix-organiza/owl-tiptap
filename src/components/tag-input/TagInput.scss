@@ -11,6 +11,23 @@
   position: relative;
   background-color: white;
 
+  &.disabled {
+    cursor: not-allowed;
+    background-color: #f5f5f5;
+    opacity: 0.7;
+
+    .ProseMirror {
+      background-color: #f5f5f5;
+      border-color: #e0e0e0;
+      color: #999;
+      pointer-events: none;
+    }
+
+    .tag-wrapper .tag {
+      pointer-events: none;
+    }
+  }
+
   .ProseMirror {
     padding: 8px;
     border: 1px solid var(--ott-border-color);

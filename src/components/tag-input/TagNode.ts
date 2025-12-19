@@ -70,9 +70,11 @@ export const TagNode = Node.create<TagNodeOptions>({
 
       dom.setAttribute('data-type', 'tag');
       dom.classList.add('tag'); // Add a class for styling
-      dom.addEventListener('click', () => {
-        this.options.onTagClick(node.attrs as TagAttributes, getPos());
-      });
+      if (!readonly) {
+        dom.addEventListener('click', () => {
+          this.options.onTagClick(node.attrs as TagAttributes, getPos());
+        });
+      }
 
       const labelSpan = document.createElement('span');
       labelSpan.textContent = label; // Set the visible text

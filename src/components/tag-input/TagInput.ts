@@ -44,6 +44,7 @@ interface TagInputState {
 
 // 定义组件 Props 的类型
 interface TagInputProps {
+  className?: string;
   ref?: (component: TagInput) => void;
   placeholder?: string;
   slots?: {
@@ -78,7 +79,7 @@ export class TagInput extends Component<TagInputProps> {
   };
 
   static template = xml`
-<div class="${classNames('&tag-input')}" t-att-class="props.className">
+<div t-att-class="className">
   <div t-ref="editor"/>
   <div t-if="state.suggestion.visible" t-att-style="state.suggestion.style" class="ott-suggestion-list-wrapper">
     <SuggestionList
@@ -110,6 +111,11 @@ export class TagInput extends Component<TagInputProps> {
       style: '',
     },
   });
+
+  get className() {
+    const disabledClass = this.props.readonly ? 'disabled' : '';
+    return classNames('&tag-input', this.props.className, disabledClass);
+  }
 
   onSuggestionSelect(event: MouseEvent, item: SuggestionItem) {
     this.props.onSuggestionSelect?.(event, item);

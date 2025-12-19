@@ -1,8 +1,8 @@
 {
   "name": "owl-tiptap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "tiptap used in odoo owl2",
-  "main": "index.js",
+  "main": "es/index.js",
   "scripts": {
     "start": "vite",
     "clean": "gulp clean",

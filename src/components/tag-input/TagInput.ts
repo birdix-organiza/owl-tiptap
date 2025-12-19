@@ -144,7 +144,13 @@ export class TagInput extends Component<TagInputProps> {
    * @returns {object} The content as a JSON object.
    */
   getContent(): any {
-    return this.state.editor!.getJSON();
+    const json = this.state.editor!.getJSON();
+    const { content } = json;
+    if (content.length === 1 && content[0].type === 'paragraph' && !content[0].content) {
+      return null;
+    }
+
+    return json;
   }
 
   /**
@@ -283,7 +289,7 @@ export class TagInput extends Component<TagInputProps> {
         },
         onUpdate: ({ editor, transaction }) => {
           if (transaction.docChanged) {
-            this.props.onChange?.(editor.getJSON());
+            this.props.onChange?.(this.getContent());
           }
         },
       }),

@@ -45,7 +45,7 @@ class App extends Component {
     useEffect(
       () => {
         setTimeout(() => {
-          this.state.readonly = true;
+          // this.state.readonly = true;
         }, 3000);
       },
       () => [],

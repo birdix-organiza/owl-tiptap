@@ -15,7 +15,7 @@ class App extends Component {
   tagInputInstance = undefined;
 
   state = useState({
-    readonly: true,
+    readonly: false,
   });
 
   items = ({ editor, query }) => {
@@ -34,6 +34,30 @@ class App extends Component {
       { label: 'Watermelon', value: 'watermelon', group: 'Fruit' },
       { label: 'Apple', value: 'apple1', group: 'Fruit' },
     ];
+    const items2 = [
+      {
+        group: '水果',
+        items: [
+          { value: 'apple', label: '苹果' },
+          { value: 'banana', label: '香蕉' },
+          { value: 'orange', label: '橙子' },
+        ],
+      },
+      {
+        group: '蔬菜',
+        items: [
+          { value: 'carrot', label: '胡萝卜' },
+          { value: 'broccoli', label: '西兰花' },
+          { value: 'tomato', label: '西红柿' },
+        ],
+      },
+    ];
+    return items2
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) => item.label.toLowerCase().startsWith(query.toLowerCase())),
+      }))
+      .filter((group) => group.items.length > 0);
     return items.filter((item) => item.label.toLowerCase().startsWith(query.toLowerCase()));
   };
 

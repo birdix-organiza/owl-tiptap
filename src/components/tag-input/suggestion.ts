@@ -1,6 +1,6 @@
 import { Extension } from '@tiptap/core';
 import { Suggestion } from '@tiptap/suggestion';
-import { SuggestionItem } from './SuggestionList';
+import { ListItem } from './SuggestionList';
 import { PluginKey } from 'prosemirror-state'; // optional, if you need to create a custom key
 import { exitSuggestion } from '@tiptap/suggestion';
 
@@ -8,7 +8,7 @@ import { exitSuggestion } from '@tiptap/suggestion';
 interface SuggestionPluginOptions {
   char?: string;
   allowedPrefixes?: string[] | null;
-  items?: (params: { query: string }) => SuggestionItem[];
+  items?: (params: { query: string }) => ListItem[];
   command?: (props: any) => void;
   render?: () => any;
 }

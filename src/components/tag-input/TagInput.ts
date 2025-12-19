@@ -6,7 +6,11 @@ import Text from '@tiptap/extension-text';
 import Paragraph from '@tiptap/extension-paragraph';
 import History from '@tiptap/extension-history';
 import Placeholder from '@tiptap/extension-placeholder';
-import { SuggestionList, SuggestionItem } from './SuggestionList';
+import { SuggestionList } from './SuggestionList';
+import type { SuggestionItem, ListItem, GroupItem } from './SuggestionList';
+
+// 重新导出类型以便用户可以从 TagInput 导入
+export type { SuggestionItem, ListItem, GroupItem } from './SuggestionList';
 import { TagNode } from './TagNode';
 import { SuggestionPlugin, exitSuggestionPlugin } from './suggestion';
 import './TagInput.scss';
@@ -50,12 +54,13 @@ interface TagInputProps {
   slots?: {
     listHeader?: any;
     listItem?: any;
+    listGroupHeader?: any; // 分组标题插槽
     listEmpty?: any;
     listFooter?: any;
   };
   suggestionListClassName?: string;
   onSuggestionSelect?: (event: MouseEvent, item: SuggestionItem) => void;
-  items?: (params: { query: string }) => SuggestionItem[];
+  items?: (params: { query: string }) => ListItem[];
   onChange?: (content: any) => void;
   readonly?: boolean;
   onTagClick?: (index: number, attrs: TagAttributes) => void;
@@ -290,8 +295,8 @@ export class TagInput extends Component<TagInputProps> {
         ],
         content: null,
         onBlur: ({ editor }) => {
-          this.state.suggestion.visible = false;
-          exitSuggestionPlugin(editor.view);
+          // this.state.suggestion.visible = false;
+          // exitSuggestionPlugin(editor.view);
         },
         onUpdate: ({ editor, transaction }) => {
           if (transaction.docChanged) {

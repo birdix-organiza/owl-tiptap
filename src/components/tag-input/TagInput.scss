@@ -28,6 +28,32 @@
     }
   }
 
+  .ott-suggestion-header {
+    font-weight: normal;
+    color: var(--ott-text-color-secondary);
+    background-color: #f5f5f5;
+    cursor: default !important;
+    padding: 6px 8px;
+    border-bottom: 1px solid #eee;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    .svg-icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      background-color: #f5f5f5 !important;
+      color: var(--ott-text-color-secondary) !important;
+    }
+  }
+
   .ProseMirror {
     padding: 8px;
     border: 1px solid var(--ott-border-color);

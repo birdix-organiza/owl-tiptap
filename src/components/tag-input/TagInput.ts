@@ -1,4 +1,4 @@
-import { Component, xml, useRef, onMounted, useEffect, useState, markRaw } from '@odoo/owl';
+import { Component, xml, useRef, onMounted, useEffect, useState, markRaw, toRaw } from '@odoo/owl';
 import { classNames } from '../../utils/classNames';
 import { Editor } from '@tiptap/core';
 import Document from '@tiptap/extension-document';
@@ -20,7 +20,7 @@ export interface TagAttributes {
   value: string;
   label?: string;
   group?: string;
-  [key: string]: any; // 允许其他属性
+  extra?: Record<string, any>; // 允许其他属性
 }
 
 // 定义标签节点的类型
@@ -185,7 +185,7 @@ export class TagInput extends Component<TagInputProps> {
       .focus()
       .insertContentAt(range, {
         type: 'tag',
-        attrs: props,
+        attrs: toRaw(props),
       })
       .run();
   }

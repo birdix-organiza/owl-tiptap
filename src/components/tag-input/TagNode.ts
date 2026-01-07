@@ -43,6 +43,9 @@ export const TagNode = Node.create<TagNodeOptions>({
       group: {
         default: null,
       },
+      extra: {
+        default: undefined,
+      },
     };
   },
 

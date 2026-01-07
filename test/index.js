@@ -1,5 +1,6 @@
 import { Component, mount, xml, useState, useEffect } from '@odoo/owl';
 import { TagInput } from '../src';
+import Placeholder from '@tiptap/extension-placeholder';
 
 class App extends Component {
   static components = {
@@ -38,7 +39,13 @@ class App extends Component {
       {
         group: '水果',
         items: [
-          { value: 'apple', label: '苹果' },
+          {
+            value: 'apple',
+            label: '苹果',
+            extra: {
+              placeholder: '23',
+            },
+          },
           { value: 'banana', label: '香蕉' },
           { value: 'orange', label: '橙子' },
         ],

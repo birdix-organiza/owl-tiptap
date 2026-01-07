@@ -41,7 +41,7 @@ export const TagNode = Node.create<TagNodeOptions>({
         default: null,
       },
       group: {
-        default: null,
+        default: undefined,
       },
       extra: {
         default: undefined,
@@ -60,14 +60,7 @@ export const TagNode = Node.create<TagNodeOptions>({
       const dom = document.createElement('span');
 
       // Get attributes directly from the node being rendered
-      const { label, ...attrs } = node.attrs as TagAttributes;
-
-      // Set data attributes
-      Object.entries(attrs).forEach(([key, value]) => {
-        if (value !== null) {
-          dom.setAttribute(`data-${key}`, value);
-        }
-      });
+      const { label } = node.attrs as TagAttributes;
 
       dom.setAttribute('data-type', 'tag');
       dom.classList.add('tag'); // Add a class for styling

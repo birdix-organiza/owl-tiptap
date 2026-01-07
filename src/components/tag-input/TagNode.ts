@@ -51,8 +51,6 @@ export const TagNode = Node.create<TagNodeOptions>({
     // For now, renderHTML is sufficient.
     return ({ node, getPos, editor }) => {
       const { readonly } = this.options; // 从 options 中获取当前状态
-      console.log(readonly);
-
       const wrapper = document.createElement('span');
       wrapper.classList.add('tag-wrapper');
 

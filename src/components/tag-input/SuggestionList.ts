@@ -219,7 +219,7 @@ export class SuggestionList extends Component<SuggestionListProps> {
       return;
     }
 
-    const selectedIndex = selectableItems.indexOf(selectedItem!);
+    const selectedIndex = selectableItems.findIndex((item) => item.value === selectedItem?.value);
     const newIndex = (selectedIndex - 1 + selectableItems.length) % selectableItems.length;
     this.state.selectedItem = selectableItems[newIndex];
   }
@@ -242,8 +242,7 @@ export class SuggestionList extends Component<SuggestionListProps> {
     if (!selectableItems.length) {
       return;
     }
-
-    const selectedIndex = selectableItems.indexOf(selectedItem!);
+    const selectedIndex = selectableItems.findIndex((item) => item.value === selectedItem?.value);
     const newIndex = (selectedIndex + 1) % selectableItems.length;
     this.state.selectedItem = selectableItems[newIndex];
   }

@@ -295,8 +295,8 @@ export class TagInput extends Component<TagInputProps> {
         ],
         content: null,
         onBlur: ({ editor }) => {
-          // this.state.suggestion.visible = false;
-          // exitSuggestionPlugin(editor.view);
+          this.state.suggestion.visible = false;
+          exitSuggestionPlugin(editor.view);
         },
         onUpdate: ({ editor, transaction }) => {
           if (transaction.docChanged) {

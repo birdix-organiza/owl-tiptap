@@ -57,6 +57,8 @@ export class SuggestionList extends Component<SuggestionListProps> {
    * 获取处理后的项目列表
    */
   get processedItems(): ListItem[] {
+    console.log(this.props.items);
+
     // 检查是否有分组项结构
     const hasGroupItems = this.props.items.some((item) => this.isGroupItem(item));
 

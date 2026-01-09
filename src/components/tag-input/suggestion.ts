@@ -3,6 +3,7 @@ import { Suggestion } from '@tiptap/suggestion';
 import { ListItem } from './SuggestionList';
 import { PluginKey } from 'prosemirror-state'; // optional, if you need to create a custom key
 import { exitSuggestion } from '@tiptap/suggestion';
+import { isChangeOrigin } from '@tiptap/extension-collaboration';
 
 // 定义 SuggestionPlugin 选项的类型
 interface SuggestionPluginOptions {
@@ -35,6 +36,9 @@ export const SuggestionPlugin = Extension.create<SuggestionPluginOptions>({
         pluginKey: MySuggestionPluginKey,
         editor: this.editor,
         ...this.options,
+        shouldShow: ({ transaction }) => {
+          return isChangeOrigin(transaction);
+        },
       }),
     ];
   },

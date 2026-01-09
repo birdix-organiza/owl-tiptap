@@ -7,13 +7,13 @@ import Paragraph from '@tiptap/extension-paragraph';
 import History from '@tiptap/extension-history';
 import Placeholder from '@tiptap/extension-placeholder';
 import { SuggestionList } from './SuggestionList';
-import type { SuggestionItem, ListItem, GroupItem } from './SuggestionList';
-
 // 重新导出类型以便用户可以从 TagInput 导入
-export type { SuggestionItem, ListItem, GroupItem } from './SuggestionList';
+import type { SuggestionItem, ListItem } from './SuggestionList';
 import { TagNode } from './TagNode';
 import { SuggestionPlugin, exitSuggestionPlugin } from './suggestion';
 import './TagInput.scss';
+
+export type { SuggestionItem, ListItem, GroupItem } from './SuggestionList';
 
 // 定义标签属性的类型
 export interface TagAttributes {
@@ -65,6 +65,7 @@ interface TagInputProps {
   readonly?: boolean;
   onTagClick?: (index: number, attrs: TagAttributes) => void;
   char?: string;
+  tagOnly?: boolean;
 }
 
 export class TagInput extends Component<TagInputProps> {
@@ -81,6 +82,7 @@ export class TagInput extends Component<TagInputProps> {
     readonly: { type: Boolean, optional: true },
     onTagClick: { type: Function, optional: true },
     char: { type: String, optional: true },
+    tagOnly: { type: Boolean, optional: true },
   };
 
   static template = xml`
@@ -101,6 +103,7 @@ export class TagInput extends Component<TagInputProps> {
     items: () => [],
     readonly: false,
     char: '@',
+    tagOnly: false,
   };
 
   editorRef = useRef('editor');
@@ -294,6 +297,11 @@ export class TagInput extends Component<TagInputProps> {
           }),
         ],
         content: null,
+        onFocus: ({ editor }) => {
+          if (this.props.tagOnly) {
+            this.state.suggestion.visible = true;
+          }
+        },
         onBlur: ({ editor }) => {
           this.state.suggestion.visible = false;
           exitSuggestionPlugin(editor.view);
